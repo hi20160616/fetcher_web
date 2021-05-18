@@ -8,19 +8,19 @@ import (
 	"github.com/hi20160616/fetcher_web/internal/pkg/render"
 )
 
-var validPath = regexp.MustCompile("^/(home|sites|search)/(.*?)$")
+var validPath = regexp.MustCompile("^/(list|search)/(.*?)$")
 
 type Handler struct {
 }
 
-func makeHandler(fn func(http.ResponseWriter, *http.Request, *render.Page)) http.HandlerFunc {
+func makeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		m := validPath.FindStringSubmatch(r.URL.Path)
 		if m == nil {
 			http.NotFound(w, r)
 			return
 		}
-		fn(w, r, &render.Page{})
+		fn(w, r)
 	}
 }
 
@@ -38,10 +38,15 @@ func GetHandler() *http.ServeMux {
 	})
 	// for static resource request
 	// mux.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.Dir("templates/default"))))
-	// mux.HandleFunc("/search/", makeHandler(searchHandler))
+	mux.HandleFunc("/list/", makeHandler(listHandler))
 	return mux
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
 	render.Derive(w, "home", &render.Page{Title: "Home", Data: data.NewsSites()})
+}
+
+func listHandler(w http.ResponseWriter, r *http.Request) {
+	p := &render.Page{Title: "List"}
+	render.Derive(w, "list", p)
 }
