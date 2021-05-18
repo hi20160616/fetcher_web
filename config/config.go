@@ -9,6 +9,10 @@ import (
 
 type configuration struct {
 	Address, RootPath, TmplPath string
+	Sites                       []Site
+}
+type Site struct {
+	Title, URL, Port string
 }
 
 var Value = &configuration{}

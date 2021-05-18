@@ -1,4 +1,7 @@
 {
 	"Address": ":8080",
-	"TmplPath": "templates"
+	"TmplPath": "templates",
+	"Sites":[
+		{"Title": "bbc", "URL":"http://bbc.com", "Port": "1001"}
+	]
 }

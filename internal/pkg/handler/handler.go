@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"regexp"
 
+	"github.com/hi20160616/fetcher_web/internal/data"
 	"github.com/hi20160616/fetcher_web/internal/pkg/render"
 )
 
@@ -42,5 +43,5 @@ func GetHandler() *http.ServeMux {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	render.Derive(w, "home", &render.Page{Title: "Home"})
+	render.Derive(w, "home", &render.Page{Title: "Home", Data: data.NewsSites()})
 }
