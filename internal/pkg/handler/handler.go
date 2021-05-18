@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"fmt"
 	"net/http"
 	"regexp"
 
@@ -36,12 +35,12 @@ func GetHandler() *http.ServeMux {
 		homeHandler(w, req)
 		// fmt.Fprintf(w, "Welcome to the home page!")
 	})
-	mux.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.Dir("templates/default"))))
+	// for static resource request
+	// mux.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.Dir("templates/default"))))
 	// mux.HandleFunc("/search/", makeHandler(searchHandler))
 	return mux
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	// 1. get activities videos by channelIds
-	fmt.Fprintf(w, "Hello world!")
+	render.Derive(w, "home", &render.Page{Title: "Home"})
 }
