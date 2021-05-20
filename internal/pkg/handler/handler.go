@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"regexp"
 
-	pb "github.com/hi20160616/fetcher_web/api/fetcher_web/v1"
-	"github.com/hi20160616/fetcher_web/internal/data"
-	"github.com/hi20160616/fetcher_web/internal/pkg/render"
+	pb "github.com/hi20160616/fetchnews/api/fetchnews/v1"
+	"github.com/hi20160616/fetchnews/internal/data"
+	"github.com/hi20160616/fetchnews/internal/pkg/render"
 )
 
 var validPath = regexp.MustCompile("^/(list|search)/(.*?)$")

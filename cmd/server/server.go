@@ -8,8 +8,8 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/hi20160616/fetcher_web/config"
-	"github.com/hi20160616/fetcher_web/internal/pkg/service"
+	"github.com/hi20160616/fetchnews/config"
+	"github.com/hi20160616/fetchnews/internal/pkg/service"
 	"golang.org/x/sync/errgroup"
 )
 

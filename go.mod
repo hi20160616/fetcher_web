@@ -1,4 +1,4 @@
-module github.com/hi20160616/fetcher_web
+module github.com/hi20160616/fetchnews
 
 go 1.16
 

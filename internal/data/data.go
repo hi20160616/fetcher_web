@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
-	pb "github.com/hi20160616/fetcher_web/api/fetcher_web/v1"
-	"github.com/hi20160616/fetcher_web/config"
+	pb "github.com/hi20160616/fetchnews/api/fetchnews/v1"
+	"github.com/hi20160616/fetchnews/config"
 	"google.golang.org/grpc"
 )
 

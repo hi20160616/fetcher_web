@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/hi20160616/fetcher_web/internal/pkg/handler"
+	"github.com/hi20160616/fetchnews/internal/pkg/handler"
 )
 
 type Server struct {
