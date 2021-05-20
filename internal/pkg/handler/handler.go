@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"context"
+	"log"
 	"net/http"
 	"regexp"
 
@@ -47,6 +49,10 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func listHandler(w http.ResponseWriter, r *http.Request) {
-	p := &render.Page{Title: "List"}
-	render.Derive(w, "list", p)
+	ds, err := data.List(context.Background(), r.URL.Path[len("/list/"):], "")
+	if err != nil {
+		log.Println(err)
+	}
+
+	render.Derive(w, "list", &render.Page{Title: "List", Data: ds})
 }
