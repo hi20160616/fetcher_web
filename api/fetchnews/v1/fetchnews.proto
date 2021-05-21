@@ -1,14 +1,23 @@
 syntax = "proto3";
 
-option go_package = "github.com/hi20160616/fetchnews/api/fetchnews/v1";
+option go_package = "github.com/hi20160616/fetchnews/api/fetchnews/v1;v1";
 
 import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
 
 package fetchnews.v1;
 
 service FetchNews{
-  rpc ListArticles(ListArticlesRequest) returns (ListArticlesResponse){}
-  rpc GetArticle(GetArticleRequest) returns (GetArticleResponse){}
+  rpc ListArticles(ListArticlesRequest) returns (ListArticlesResponse){
+    option (google.api.http) = {
+      get: "/v1/article/"
+    };
+  }
+  rpc GetArticle(GetArticleRequest) returns (GetArticleResponse){
+    option (google.api.http) = {
+      get: "/v1/article/{id}"
+    };
+  }
   rpc SearchArticles(SearchArticlesRequest) returns (SearchArticlesResponse){}
 }
 
