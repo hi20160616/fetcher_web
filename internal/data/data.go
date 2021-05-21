@@ -24,7 +24,7 @@ func List(ctx context.Context, in *pb.ListArticlesRequest) (*pb.Articles, error)
 			log.Fatalf("did not connect: %v", err)
 		}
 		defer conn.Close()
-		c := pb.NewNewsFetcherClient(conn)
+		c := pb.NewFetchNewsClient(conn)
 		ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 		defer cancel()
 		resp, err := c.ListArticles(ctx, in)

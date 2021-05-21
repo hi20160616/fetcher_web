@@ -18,7 +18,7 @@ func ListArticles(ctx context.Context, in *pb.ListArticlesRequest) (*pb.Articles
 		return nil, errors.WithMessage(err, "ListArticles Dial error")
 	}
 	defer conn.Close()
-	c := pb.NewNewsFetcherClient(conn)
+	c := pb.NewFetchNewsClient(conn)
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancel()
 	resp, err := c.ListArticles(ctx, in)

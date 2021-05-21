@@ -26,3 +26,6 @@ protoc --go_out=. --go_opt=paths=source_relative \
     api/fetchnews/v1/fetchnews.proto
 go mod tidy
 ```
+
+# TODO
+- [ ] toml config unmarshal

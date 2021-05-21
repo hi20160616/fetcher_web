@@ -18,17 +18,32 @@ type Site struct {
 var Value = &configuration{}
 
 func init() {
+	if err := initJson(); err != nil {
+		log.Println(err)
+	}
+}
+
+func initJson() error {
+	return initExt(".json")
+}
+
+func initToml() error {
+	return initExt(".toml")
+}
+
+func initExt(ext string) error {
 	root, err := os.Getwd()
 	if err != nil {
-		log.Printf("config Getwd: %#v", err)
+		return err
 	}
-	f, err := os.ReadFile(filepath.Join(root, "config/config.json"))
+	f, err := os.ReadFile(filepath.Join(root, "config/config"+ext))
 	if err != nil {
-		log.Printf("config ReadFile: %#v", err)
+		return err
 	}
 	if err = json.Unmarshal(f, Value); err != nil {
-		log.Printf("config Unmarshal err: %#v", err)
+		return err
 	}
 	Value.RootPath = root
 	Value.TmplPath = filepath.Join(root, Value.TmplPath)
+	return nil
 }
