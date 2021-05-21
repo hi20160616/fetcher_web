@@ -10,7 +10,7 @@ package fetchnews.v1;
 service FetchNews{
   rpc ListArticles(ListArticlesRequest) returns (ListArticlesResponse){
     option (google.api.http) = {
-      get: "/v1/article/"
+      get: "/v1/article"
     };
   }
   rpc GetArticle(GetArticleRequest) returns (GetArticleResponse){
@@ -18,7 +18,11 @@ service FetchNews{
       get: "/v1/article/{id}"
     };
   }
-  rpc SearchArticles(SearchArticlesRequest) returns (SearchArticlesResponse){}
+  rpc SearchArticles(SearchArticlesRequest) returns (SearchArticlesResponse){
+    option (google.api.http) = {
+      get: "/v1/search/{keyword}"
+    };
+  }
 }
 
 message ListArticlesRequest{
@@ -52,7 +56,8 @@ message Article{
   string content = 3;
   google.protobuf.Timestamp update_time = 4;
   string website_id = 5;
-  string website_title = 6;
+  string website_domain = 6;
+  string website_title = 7;
 }
 
 message Articles{
