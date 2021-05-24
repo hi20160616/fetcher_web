@@ -10,6 +10,9 @@ import (
 	"google.golang.org/grpc"
 )
 
+type Data struct {
+}
+
 func NewsSites() map[string]config.MicroService {
 	return config.Data.MS
 }
