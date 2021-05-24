@@ -14,7 +14,7 @@ import (
 )
 
 var (
-	address string = config.Value.Address
+	address string = config.Data.WebServer.Addr
 )
 
 func main() {

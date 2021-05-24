@@ -1,49 +1,64 @@
 package config
 
 import (
+	"bytes"
 	"encoding/json"
 	"log"
 	"os"
 	"path/filepath"
+
+	"github.com/komkom/toml"
 )
 
 type configuration struct {
-	Address, RootPath, TmplPath string
-	Sites                       []Site
-}
-type Site struct {
-	Title, URL, Port string
-}
-
-var Value = &configuration{}
-
-func init() {
-	if err := initJson(); err != nil {
-		log.Println(err)
-	}
+	Title     string    `json:"title"`
+	WebServer webserver `json:"webserver"`
+	API       struct {
+		GRPC api `json:"grpc"`
+		HTTP api `json:"http"`
+	} `json:"api"`
+	MS map[string]MicroService `json:"ms"`
 }
 
-func initJson() error {
-	return initExt(".json")
+type webserver struct {
+	Addr, Tmpl string
 }
 
-func initToml() error {
-	return initExt(".toml")
+type api struct {
+	Addr, Timeout string
 }
 
-func initExt(ext string) error {
+type MicroService struct {
+	Title   string `json:"title"`
+	Domain  string `json:"domain"`
+	URL     string `json:"url"`
+	Addr    string `json:"addr"`
+	Timeout string `json:"timeout"`
+}
+
+var Data = &configuration{}
+
+func get() error {
 	root, err := os.Getwd()
 	if err != nil {
 		return err
 	}
-	f, err := os.ReadFile(filepath.Join(root, "config/config"+ext))
+	// root = "../" // for config test
+	f, err := os.ReadFile(filepath.Join(root, "config/config.toml"))
 	if err != nil {
 		return err
 	}
-	if err = json.Unmarshal(f, Value); err != nil {
+
+	dec := json.NewDecoder(toml.New(bytes.NewBuffer(f)))
+	err = dec.Decode(Data)
+	if err != nil {
 		return err
 	}
-	Value.RootPath = root
-	Value.TmplPath = filepath.Join(root, Value.TmplPath)
 	return nil
+}
+
+func init() {
+	if err := get(); err != nil {
+		log.Printf("config init error: %#v", err)
+	}
 }

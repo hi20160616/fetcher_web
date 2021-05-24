@@ -10,8 +10,8 @@ import (
 	"google.golang.org/grpc"
 )
 
-func NewsSites() []config.Site {
-	return config.Value.Sites
+func NewsSites() map[string]config.MicroService {
+	return config.Data.MS
 }
 
 func List(ctx context.Context, in *pb.ListArticlesRequest) (*pb.Articles, error) {

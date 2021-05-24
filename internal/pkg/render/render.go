@@ -11,7 +11,7 @@ import (
 )
 
 var (
-	tmplPath = filepath.Join(config.Value.TmplPath, "default")
+	tmplPath = filepath.Join(config.Data.WebServer.Tmpl, "default")
 )
 
 type Page struct {
