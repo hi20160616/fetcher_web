@@ -1,13 +1,11 @@
 package config
 
 import (
-	"bytes"
-	"encoding/json"
 	"log"
 	"os"
 	"path/filepath"
 
-	"github.com/komkom/toml"
+	"github.com/pelletier/go-toml"
 )
 
 type configuration struct {
@@ -44,17 +42,12 @@ func get() error {
 		return err
 	}
 	// root = "../" // for config test
-	f, err := os.ReadFile(filepath.Join(root, "config/config.toml"))
+	cfgFile := filepath.Join(root, "config/config.toml")
+	cfg, err := toml.LoadFile(cfgFile)
 	if err != nil {
 		return err
 	}
-
-	dec := json.NewDecoder(toml.New(bytes.NewBuffer(f)))
-	err = dec.Decode(Data)
-	if err != nil {
-		return err
-	}
-	return nil
+	return cfg.Unmarshal(Data)
 }
 
 func init() {
