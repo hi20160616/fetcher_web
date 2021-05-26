@@ -1,11 +1,10 @@
 package config
 
 import (
+	"encoding/json"
 	"log"
 	"os"
 	"path/filepath"
-
-	"github.com/pelletier/go-toml"
 )
 
 type configuration struct {
@@ -15,7 +14,7 @@ type configuration struct {
 		GRPC api `json:"grpc"`
 		HTTP api `json:"http"`
 	} `json:"api"`
-	MS map[string]MicroService `json:"ms"`
+	MS map[string]MicroService `json:"microservice"`
 }
 
 type webserver struct {
@@ -42,12 +41,11 @@ func get() error {
 		return err
 	}
 	// root = "../" // for config test
-	cfgFile := filepath.Join(root, "config/config.toml")
-	cfg, err := toml.LoadFile(cfgFile)
+	f, err := os.ReadFile(filepath.Join(root, "config/config.json"))
 	if err != nil {
 		return err
 	}
-	return cfg.Unmarshal(Data)
+	return json.Unmarshal(f, Data)
 }
 
 func init() {

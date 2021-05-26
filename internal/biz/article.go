@@ -22,7 +22,6 @@ type ArticleUsecase struct {
 	repo ArticleRepo
 }
 
-// TODO: log.Logger in param
 func NewArticleUsecase(repo ArticleRepo, logger log.Logger) *ArticleUsecase {
 	return &ArticleUsecase{repo: repo}
 }

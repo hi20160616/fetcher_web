@@ -11,6 +11,7 @@ import (
 )
 
 type Data struct {
+	MS config.MicroService
 }
 
 func NewsSites() map[string]config.MicroService {
