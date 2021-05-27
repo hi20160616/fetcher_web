@@ -26,14 +26,14 @@ func NewArticleUsecase(repo ArticleRepo, logger log.Logger) *ArticleUsecase {
 	return &ArticleUsecase{repo: repo}
 }
 
-func (uc *ArticleUsecase) List(ctx context.Context) ([]*Article, error) {
-	return uc.repo.ListArticles(ctx)
-}
-
-func (uc *ArticleUsecase) Get(ctx context.Context, id string) (*Article, error) {
-	return uc.repo.GetArticle(ctx, id)
-}
-
-func (uc *ArticleUsecase) Search(ctx context.Context, keyword ...string) ([]*Article, error) {
-	return uc.repo.SearchArticles(ctx, keyword...)
-}
+// func (uc *ArticleUsecase) List(ctx context.Context) ([]*Article, error) {
+//         return uc.repo.ListArticles(ctx)
+// }
+//
+// func (uc *ArticleUsecase) Get(ctx context.Context, id string) (*Article, error) {
+//         return uc.repo.GetArticle(ctx, id)
+// }
+//
+// func (uc *ArticleUsecase) Search(ctx context.Context, keyword ...string) ([]*Article, error) {
+//         return uc.repo.SearchArticles(ctx, keyword...)
+// }
