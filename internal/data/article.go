@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/go-kratos/kratos/v2/log"
-	pb "github.com/hi20160616/fetchnews/api/fetchnews/v1"
+	pb "github.com/hi20160616/fetchnews-api/proto/v1"
 	"github.com/hi20160616/fetchnews/internal/biz"
 	"github.com/hi20160616/fetchnews/internal/pkg/db/ms"
 )
@@ -33,7 +33,7 @@ func (ar *articleRepo) ListArticles(ctx context.Context) ([]*biz.Article, error)
 	if err != nil {
 		return nil, err
 	}
-	for _, item := range resp.Articles.Articles {
+	for _, item := range resp.Articles {
 		t := &biz.Article{
 			Id:            item.Id,
 			Title:         item.Title,

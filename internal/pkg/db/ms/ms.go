@@ -3,7 +3,7 @@ package ms
 import (
 	"log"
 
-	pb "github.com/hi20160616/fetchnews/api/fetchnews/v1"
+	pb "github.com/hi20160616/fetchnews/api/fetchnews/web/v1"
 	"github.com/hi20160616/fetchnews/config"
 	"google.golang.org/grpc"
 )
@@ -11,7 +11,7 @@ import (
 type Conn struct {
 	MicroService config.MicroService
 	ConnClient   *grpc.ClientConn
-	FetchClient  pb.FetchNewsClient
+	FetchClient  pb.FetchnewsWebClient
 }
 
 var Conns = map[string]*Conn{}
@@ -32,7 +32,7 @@ func initPool() error {
 		Conns[v.Title] = &Conn{
 			MicroService: v,
 			ConnClient:   conn,
-			FetchClient:  pb.NewFetchNewsClient(conn),
+			FetchClient:  pb.NewFetchnewsWebClient(conn),
 		}
 	}
 	return nil

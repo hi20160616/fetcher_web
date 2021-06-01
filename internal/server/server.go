@@ -1,8 +1,7 @@
-package service
+package server
 
 import (
 	"context"
-	"log"
 	"net/http"
 
 	"github.com/hi20160616/fetchnews/internal/pkg/handler"
@@ -20,7 +19,6 @@ func NewServer(address string) (*Server, error) {
 }
 
 func (s *Server) Start(ctx context.Context) error {
-	log.Println("Server start on " + s.Addr)
 	if err := s.ListenAndServe(); err != http.ErrServerClosed {
 		return err
 	}
@@ -28,10 +26,8 @@ func (s *Server) Start(ctx context.Context) error {
 }
 
 func (s *Server) Stop(ctx context.Context) error {
-	log.Println("Server stop ...")
 	if err := s.Shutdown(context.Background()); err != nil {
-		log.Printf("HTTP server Shutdown: %v", err)
+		return err
 	}
-	log.Println("Server gracefully stopped.")
 	return ctx.Err()
 }

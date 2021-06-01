@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 )
 
+var RootPath = "./"
+
 type configuration struct {
 	Title     string    `json:"title"`
 	WebServer webserver `json:"webserver"`
@@ -26,22 +28,27 @@ type api struct {
 }
 
 type MicroService struct {
-	Title   string `json:"title"`
-	Domain  string `json:"domain"`
-	URL     string `json:"url"`
-	Addr    string `json:"addr"`
-	Timeout string `json:"timeout"`
+	Title     string   `json:"title"`
+	Domain    string   `json:"domain"`
+	URL       []string `json:"url"`
+	Addr      string   `json:"addr"`
+	Timeout   string   `json:"timeout"`
+	Heartbeat string   `json:"heartbeat"`
 }
 
 var Data = &configuration{}
 
-func get() error {
+func setRootPath() error {
 	root, err := os.Getwd()
 	if err != nil {
 		return err
 	}
-	// root = "../" // for config test
-	f, err := os.ReadFile(filepath.Join(root, "config/config.json"))
+	RootPath = root
+	return nil
+}
+
+func get() error {
+	f, err := os.ReadFile(filepath.Join(RootPath, "config/config.json"))
 	if err != nil {
 		return err
 	}
@@ -49,7 +56,10 @@ func get() error {
 }
 
 func init() {
+	if err := setRootPath(); err != nil {
+		log.Printf("config init error: %v", err)
+	}
 	if err := get(); err != nil {
-		log.Printf("config init error: %#v", err)
+		log.Printf("config init error: %v", err)
 	}
 }

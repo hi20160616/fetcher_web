@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"regexp"
 
-	pb "github.com/hi20160616/fetchnews/api/fetchnews/v1"
+	pb "github.com/hi20160616/fetchnews-api/proto/v1"
 	"github.com/hi20160616/fetchnews/internal/data"
 	"github.com/hi20160616/fetchnews/internal/pkg/render"
 )
@@ -50,7 +50,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func listHandler(w http.ResponseWriter, r *http.Request) {
-	ds, err := data.List(context.Background(), &pb.ListArticlesRequest{Domain: r.URL.Path[len("/list/"):]})
+	ds, err := data.List(context.Background(), &pb.ListArticlesRequest{})
 	if err != nil {
 		log.Println(err)
 	}

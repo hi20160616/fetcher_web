@@ -6,6 +6,7 @@ import (
 )
 
 func TestGet(t *testing.T) {
+	RootPath = "../" // for test
 	err := get()
 	if err != nil {
 		t.Error(err)
