@@ -35,13 +35,15 @@ func main() {
 		return s.Start(ctx)
 	})
 	g.Go(func() error {
-		log.Println("MicroService Clients Conns open now...")
-		return ms.Open()
-	})
-	g.Go(func() error {
 		<-ctx.Done() // wait for stop signal
 		log.Println("Server stop now...")
 		return s.Stop(ctx)
+	})
+
+	// MicroService
+	g.Go(func() error {
+		log.Println("MicroService Clients Conns open now...")
+		return ms.Open()
 	})
 	g.Go(func() error {
 		<-ctx.Done()

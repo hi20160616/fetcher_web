@@ -28,3 +28,8 @@ go mod tidy
 ```
 
 # TODO
+[ ] add: content display
+[ ] add: search implement
+[ ] fix: dumplicate double loop range for objects type switch
+[ ] change: handler path: list to ms title, such as bbc, voa, etc.
+[ ] optimize: update skeleton to deal better for biz, data, service
