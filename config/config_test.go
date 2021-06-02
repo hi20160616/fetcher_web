@@ -6,11 +6,16 @@ import (
 )
 
 func TestGet(t *testing.T) {
-	RootPath = "../" // for test
-	err := get()
-	if err != nil {
+	// RootPath = "../" // for test
+	// err := get()
+	// if err != nil {
+	//         t.Error(err)
+	// }
+	if err := Reset("../"); err != nil {
 		t.Error(err)
 	}
 	fmt.Println("Configuration:")
-	fmt.Println(Data)
+	for k, v := range Data.MS {
+		fmt.Printf("Key: %s, Value: %s", k, v)
+	}
 }

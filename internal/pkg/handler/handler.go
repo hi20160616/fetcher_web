@@ -7,6 +7,7 @@ import (
 	"regexp"
 
 	pb "github.com/hi20160616/fetchnews-api/proto/v1"
+	"github.com/hi20160616/fetchnews/config"
 	"github.com/hi20160616/fetchnews/internal/data"
 	"github.com/hi20160616/fetchnews/internal/pkg/render"
 )
@@ -46,7 +47,7 @@ func GetHandler() *http.ServeMux {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	render.Derive(w, "home", &render.Page{Title: "Home", Data: data.NewsSites()})
+	render.Derive(w, "home", &render.Page{Title: "Home", Data: config.Data.MS})
 }
 
 func listHandler(w http.ResponseWriter, r *http.Request) {

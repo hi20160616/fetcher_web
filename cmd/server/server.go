@@ -9,6 +9,7 @@ import (
 	"syscall"
 
 	"github.com/hi20160616/fetchnews/config"
+	"github.com/hi20160616/fetchnews/internal/pkg/db/ms"
 	"github.com/hi20160616/fetchnews/internal/server"
 	"github.com/pkg/errors"
 	"golang.org/x/sync/errgroup"
@@ -34,9 +35,18 @@ func main() {
 		return s.Start(ctx)
 	})
 	g.Go(func() error {
+		log.Println("MicroService Clients Conns open now...")
+		return ms.Open()
+	})
+	g.Go(func() error {
 		<-ctx.Done() // wait for stop signal
 		log.Println("Server stop now...")
 		return s.Stop(ctx)
+	})
+	g.Go(func() error {
+		<-ctx.Done()
+		log.Println("MicroService Clients Conns close now...")
+		return ms.Close()
 	})
 
 	// Elegant stop

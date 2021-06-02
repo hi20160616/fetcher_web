@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 )
 
-var RootPath = "./"
+var RootPath = ""
 
 type configuration struct {
 	Title     string    `json:"title"`
@@ -60,6 +60,12 @@ func init() {
 		log.Printf("config init error: %v", err)
 	}
 	if err := get(); err != nil {
-		log.Printf("config init error: %v", err)
+		log.Printf("config get() error: %v", err)
 	}
+}
+
+// Reset is for test to reset RootPath and invoke get()
+func Reset(pwd string) error {
+	RootPath = pwd
+	return get()
 }

@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/hi20160616/fetchnews/config"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 var (
@@ -46,20 +47,16 @@ func Summary(des string) string {
 	return string(dRune[:300])
 }
 
-func parseWithZone(t string) time.Time {
-	tt, err := time.Parse(time.RFC3339, t)
-	if err != nil {
-		log.Printf("render: SmartTime: %v", err)
-	}
+func parseWithZone(t time.Time) time.Time {
 	loc := time.FixedZone("UTC", 8*60*60)
-	return tt.In(loc)
+	return t.In(loc)
 
 }
 
-func SmartTime(t string) string {
-	return parseWithZone(t).Format("15:04/01.02")
+func SmartTime(t *timestamppb.Timestamp) string {
+	return parseWithZone(t.AsTime()).Format("[15:04][01.02]")
 }
 
-func SmartLongTime(t string) string {
+func SmartLongTime(t time.Time) string {
 	return parseWithZone(t).String()
 }

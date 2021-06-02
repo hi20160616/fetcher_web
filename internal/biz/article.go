@@ -9,7 +9,7 @@ import (
 
 type Article struct {
 	Id, Title, Content, WebsiteId, WebsiteDomain, WebsiteTitle string
-	UpdateTime                                                 timestamppb.Timestamp
+	UpdateTime                                                 *timestamppb.Timestamp
 }
 
 type ArticleRepo interface {

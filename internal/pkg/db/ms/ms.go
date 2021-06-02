@@ -1,9 +1,12 @@
 package ms
 
 import (
+	"context"
 	"log"
+	"time"
 
-	pb "github.com/hi20160616/fetchnews/api/fetchnews/web/v1"
+	pb "github.com/hi20160616/fetchnews-api/proto/v1"
+
 	"github.com/hi20160616/fetchnews/config"
 	"google.golang.org/grpc"
 )
@@ -11,29 +14,26 @@ import (
 type Conn struct {
 	MicroService config.MicroService
 	ConnClient   *grpc.ClientConn
-	FetchClient  pb.FetchnewsWebClient
+	FetchClient  pb.FetchNewsClient
 }
 
 var Conns = map[string]*Conn{}
 
-func init() {
-	if err := initPool(); err != nil {
-		log.Printf("ms initPool error: %#v", err)
-	}
-}
+func Open() error {
+	if Conns != nil {
+		for _, v := range config.Data.MS {
+			conn, err := grpc.Dial(v.Addr, grpc.WithInsecure(), grpc.WithBlock())
+			if err != nil {
+				return err
+			}
+			// defer conn.Close()
+			Conns[v.Title] = &Conn{
+				MicroService: v,
+				ConnClient:   conn,
+				FetchClient:  pb.NewFetchNewsClient(conn),
+			}
+		}
 
-func initPool() error {
-	for _, v := range config.Data.MS {
-		conn, err := grpc.Dial(v.Addr, grpc.WithInsecure(), grpc.WithBlock())
-		if err != nil {
-			return err
-		}
-		defer conn.Close()
-		Conns[v.Title] = &Conn{
-			MicroService: v,
-			ConnClient:   conn,
-			FetchClient:  pb.NewFetchnewsWebClient(conn),
-		}
 	}
 	return nil
 }
@@ -43,6 +43,19 @@ func Close() error {
 		if err := c.ConnClient.Close(); err != nil {
 			return err
 		}
+		delete(Conns, c.MicroService.Title)
 	}
+	return nil
+}
+
+// List will invoke microservice by title defined in config.json
+func List(siteTitle string) error {
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+	r, err := Conns[siteTitle].FetchClient.ListArticles(ctx, &pb.ListArticlesRequest{})
+	if err != nil {
+		log.Fatalf("could not greet: %v", err)
+	}
+	log.Printf("Greeting: %s", r.GetArticles())
 	return nil
 }
