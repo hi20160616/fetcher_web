@@ -42,13 +42,21 @@ func main() {
 
 	// MicroService
 	g.Go(func() error {
-		log.Println("MicroService Clients Conns open now...")
-		return ms.Open()
+		log.Println("MicroServices connecting...")
+		if err := ms.Open(); err != nil {
+			return err
+		}
+		log.Println("MicroServices conected.")
+		return nil
 	})
 	g.Go(func() error {
 		<-ctx.Done()
-		log.Println("MicroService Clients Conns close now...")
-		return ms.Close()
+		log.Println("MicroServices Clients Conns close now...")
+		if err := ms.Close(); err != nil {
+			return err
+		}
+		log.Println("Close done.")
+		return nil
 	})
 
 	// Elegant stop

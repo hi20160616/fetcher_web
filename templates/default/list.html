@@ -16,7 +16,7 @@
 	<tbody>
 	    {{range .Data}}
 	    <tr>
-		    <td><a href="./{{.WebsiteTitle}}/{{.Id}}" target="_blank">{{.Title}}</a></td>
+		    <td><a href="/article/?id={{.Id}}&website={{.WebsiteTitle}}" target="_blank">{{.Title}}</a></td>
 		<td>@{{.WebsiteTitle}}</td>
 		<td>{{smartTime .UpdateTime}}</td>
 	    </tr>

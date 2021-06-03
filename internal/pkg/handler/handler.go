@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
+	"regexp"
 	"strings"
 
 	pb "github.com/hi20160616/fetchnews-api/proto/v1"
@@ -12,56 +13,16 @@ import (
 	"github.com/hi20160616/fetchnews/internal/pkg/render"
 )
 
-var part1 = "list|search"
-var part2 = make([]string, 0) // microservice title arranged in config
-
-func init() {
-	for _, v := range config.Data.MS {
-		part2 = append(part2, v.Title)
-	}
-}
-
-func validReq(r *http.Request) []string {
-	invalidPart1 := func(s string) bool {
-		for _, v := range strings.Split(part1, "|") {
-			if v == s {
-				return false
-			}
-		}
-		return true
-	}
-	invalidPart2 := func(t string) bool {
-		for _, tt := range part2 {
-			if t == tt {
-				return false
-			}
-		}
-		return true
-	}
-	parts := strings.Split(r.URL.Path, "/")
-	if parts == nil || invalidPart1(parts[1]) || invalidPart2(parts[2]) {
-		return nil
-	}
-
-	return parts
-}
+var validPath = regexp.MustCompile("^/(list|article|search)/(.*?)$")
 
 // makeHandler invoke fn after path valided, and arrange args from url to object: `&render.Page{}`
 func makeHandler(fn func(http.ResponseWriter, *http.Request, *render.Page)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		p := &render.Page{}
-		parts := validReq(r)
-		if len(parts) == 0 {
+		m := validPath.FindStringSubmatch(r.URL.Path)
+		if m == nil {
 			http.NotFound(w, r)
-			return
 		}
-		switch {
-		case len(parts) == 3:
-			p.Title = parts[2]
-		case len(parts) == 4:
-			p.Title, p.Data = parts[2], parts[3]
-		}
-		fn(w, r, p)
+		fn(w, r, &render.Page{})
 	}
 }
 
@@ -76,11 +37,9 @@ func GetHandler() *http.ServeMux {
 			return
 		}
 		homeHandler(w, req)
-		// fmt.Fprintf(w, "Welcome to the home page!")
 	})
-	// for static resource request
-	// mux.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.Dir("templates/default"))))
 	mux.HandleFunc("/list/", makeHandler(listArticlesHandler))
+	mux.HandleFunc("/article/", makeHandler(getArticleHandler))
 	return mux
 }
 
@@ -89,7 +48,9 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func listArticlesHandler(w http.ResponseWriter, r *http.Request, p *render.Page) {
-	ds, err := data.ListArticles(context.Background(), &pb.ListArticlesRequest{}, p.Title)
+	msTitle := r.URL.Path[len("/list/"):]
+	msTitle = strings.ReplaceAll(msTitle, "/", "")
+	ds, err := data.ListArticles(context.Background(), &pb.ListArticlesRequest{}, msTitle)
 	if err != nil {
 		log.Println(err)
 	}
@@ -98,13 +59,9 @@ func listArticlesHandler(w http.ResponseWriter, r *http.Request, p *render.Page)
 }
 
 func getArticleHandler(w http.ResponseWriter, r *http.Request, p *render.Page) {
-	// `/list/bbc-1_c/s123adfasdf`
-	// p.Data arranged by makeHandler: validReq
-	id, ok := p.Data.(string)
-	if !ok {
-		http.Error(w, "data type assertion error", http.StatusInternalServerError)
-	}
-	a, err := data.GetArticle(context.Background(), &pb.GetArticleRequest{Id: id}, p.Title)
+	msTitle := r.URL.Query().Get("website")
+	id := r.URL.Query().Get("id")
+	a, err := data.GetArticle(context.Background(), &pb.GetArticleRequest{Id: id}, msTitle)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
