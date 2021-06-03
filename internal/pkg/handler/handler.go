@@ -4,7 +4,7 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"regexp"
+	"strings"
 
 	pb "github.com/hi20160616/fetchnews-api/proto/v1"
 	"github.com/hi20160616/fetchnews/config"
@@ -12,22 +12,60 @@ import (
 	"github.com/hi20160616/fetchnews/internal/pkg/render"
 )
 
-var validPath = regexp.MustCompile("^/(list|search)/(.*?)$")
+var part1 = "list|search"
+var part2 = make([]string, 0) // microservice title arranged in config
 
-type Handler struct {
-}
-
-func makeHandler(fn func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		m := validPath.FindStringSubmatch(r.URL.Path)
-		if m == nil {
-			http.NotFound(w, r)
-			return
-		}
-		fn(w, r)
+func init() {
+	for _, v := range config.Data.MS {
+		part2 = append(part2, v.Title)
 	}
 }
 
+func validReq(r *http.Request) []string {
+	invalidPart1 := func(s string) bool {
+		for _, v := range strings.Split(part1, "|") {
+			if v == s {
+				return false
+			}
+		}
+		return true
+	}
+	invalidPart2 := func(t string) bool {
+		for _, tt := range part2 {
+			if t == tt {
+				return false
+			}
+		}
+		return true
+	}
+	parts := strings.Split(r.URL.Path, "/")
+	if parts == nil || invalidPart1(parts[1]) || invalidPart2(parts[2]) {
+		return nil
+	}
+
+	return parts
+}
+
+// makeHandler invoke fn after path valided, and arrange args from url to object: `&render.Page{}`
+func makeHandler(fn func(http.ResponseWriter, *http.Request, *render.Page)) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		p := &render.Page{}
+		parts := validReq(r)
+		if len(parts) == 0 {
+			http.NotFound(w, r)
+			return
+		}
+		switch {
+		case len(parts) == 3:
+			p.Title = parts[2]
+		case len(parts) == 4:
+			p.Title, p.Data = parts[2], parts[3]
+		}
+		fn(w, r, p)
+	}
+}
+
+// GetHandler is a handler merger and a router for mutipl handler
 func GetHandler() *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
@@ -42,7 +80,7 @@ func GetHandler() *http.ServeMux {
 	})
 	// for static resource request
 	// mux.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.Dir("templates/default"))))
-	mux.HandleFunc("/list/", makeHandler(listHandler))
+	mux.HandleFunc("/list/", makeHandler(listArticlesHandler))
 	return mux
 }
 
@@ -50,11 +88,26 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	render.Derive(w, "home", &render.Page{Title: "Home", Data: config.Data.MS})
 }
 
-func listHandler(w http.ResponseWriter, r *http.Request) {
-	ds, err := data.List(context.Background(), &pb.ListArticlesRequest{})
+func listArticlesHandler(w http.ResponseWriter, r *http.Request, p *render.Page) {
+	ds, err := data.ListArticles(context.Background(), &pb.ListArticlesRequest{}, p.Title)
 	if err != nil {
 		log.Println(err)
 	}
+	p.Data = ds.Articles
+	render.Derive(w, "list", p)
+}
 
-	render.Derive(w, "list", &render.Page{Title: "List", Data: ds})
+func getArticleHandler(w http.ResponseWriter, r *http.Request, p *render.Page) {
+	// `/list/bbc-1_c/s123adfasdf`
+	// p.Data arranged by makeHandler: validReq
+	id, ok := p.Data.(string)
+	if !ok {
+		http.Error(w, "data type assertion error", http.StatusInternalServerError)
+	}
+	a, err := data.GetArticle(context.Background(), &pb.GetArticleRequest{Id: id}, p.Title)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	p.Data = a
+	render.Derive(w, "content", p)
 }

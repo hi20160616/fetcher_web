@@ -11,10 +11,6 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-var (
-	tmplPath = filepath.Join(config.Data.WebServer.Tmpl, "default")
-)
-
 type Page struct {
 	Title string
 	Data  interface{}
@@ -28,6 +24,8 @@ func init() {
 		"smartTime":     SmartTime,
 		"smartLongTime": SmartLongTime,
 	})
+	// tmplPath := filepath.Join("../../../templates", "default") // for TestValidReq
+	tmplPath := filepath.Join(config.Data.WebServer.Tmpl, "default")
 	pattern := filepath.Join(tmplPath, "*.html")
 	templates = template.Must(templates.ParseGlob(pattern))
 }

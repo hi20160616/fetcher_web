@@ -29,7 +29,7 @@ func (ar *articleRepo) ListArticles(ctx context.Context) ([]*biz.Article, error)
 	as := []*biz.Article{}
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancel()
-	c := ms.Conns[ar.data.MS.Title].FetchClient
+	c := ms.Conns[ar.data.MsTitle].FetchClient
 	resp, err := c.ListArticles(ctx, &pb.ListArticlesRequest{})
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func (ar *articleRepo) ListArticles(ctx context.Context) ([]*biz.Article, error)
 func (ar *articleRepo) GetArticle(ctx context.Context, id string) (*biz.Article, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancel()
-	c := ms.Conns[ar.data.MS.Title].FetchClient
+	c := ms.Conns[ar.data.MsTitle].FetchClient
 	resp, err := c.GetArticle(ctx, &pb.GetArticleRequest{Id: id})
 	if err != nil {
 		return nil, err
@@ -73,7 +73,7 @@ func (ar *articleRepo) SearchArticles(ctx context.Context, keyword ...string) ([
 	as := []*biz.Article{}
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancel()
-	c := ms.Conns[ar.data.MS.Title].FetchClient
+	c := ms.Conns[ar.data.MsTitle].FetchClient
 	resp, err := c.SearchArticles(ctx, &pb.SearchArticlesRequest{Keyword: strings.Join(keyword, ",")})
 	if err != nil {
 		return nil, err

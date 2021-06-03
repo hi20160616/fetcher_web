@@ -5,16 +5,15 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	pb "github.com/hi20160616/fetchnews-api/proto/v1"
-	"github.com/hi20160616/fetchnews/config"
 )
 
 type Data struct {
-	MS config.MicroService
+	MsTitle, ID, Keyword string
 }
 
-func List(ctx context.Context, in *pb.ListArticlesRequest) ([]*pb.Article, error) {
-	ar := NewArticleRepo(&Data{config.MicroService{Title: "bbc"}}, &log.Verbose{})
-	as, err := ar.ListArticles(context.Background())
+func ListArticles(ctx context.Context, in *pb.ListArticlesRequest, msTitle string) (*pb.ListArticlesResponse, error) {
+	ar := NewArticleRepo(&Data{MsTitle: msTitle}, &log.Verbose{})
+	as, err := ar.ListArticles(ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -30,5 +29,22 @@ func List(ctx context.Context, in *pb.ListArticlesRequest) ([]*pb.Article, error
 			WebsiteTitle:  a.WebsiteTitle,
 		})
 	}
-	return resp, nil
+	return &pb.ListArticlesResponse{Articles: resp}, nil
+}
+
+func GetArticle(ctx context.Context, in *pb.GetArticleRequest, msTitle string) (*pb.Article, error) {
+	ar := NewArticleRepo(&Data{MsTitle: msTitle}, &log.Verbose{})
+	a, err := ar.GetArticle(ctx, in.Id)
+	if err != nil {
+		return nil, err
+	}
+	return &pb.Article{
+		Id:            a.Id,
+		Title:         a.Title,
+		Content:       a.Content,
+		WebsiteId:     a.WebsiteId,
+		WebsiteDomain: a.WebsiteDomain,
+		WebsiteTitle:  a.WebsiteTitle,
+		UpdateTime:    a.UpdateTime,
+	}, nil
 }
