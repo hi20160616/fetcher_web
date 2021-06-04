@@ -48,3 +48,24 @@ func GetArticle(ctx context.Context, in *pb.GetArticleRequest, msTitle string) (
 		UpdateTime:    a.UpdateTime,
 	}, nil
 }
+
+func SearchArticles(ctx context.Context, in *pb.SearchArticlesRequest) (*pb.SearchArticlesResponse, error) {
+	ar := NewArticleRepo(&Data{}, &log.Verbose{})
+	as, err := ar.SearchArticles(ctx, in.Keyword)
+	if err != nil {
+		return nil, err
+	}
+	resp := []*pb.Article{}
+	for _, a := range as {
+		resp = append(resp, &pb.Article{
+			Id:            a.Id,
+			Title:         a.Title,
+			Content:       a.Content,
+			WebsiteId:     a.WebsiteId,
+			WebsiteDomain: a.WebsiteDomain,
+			WebsiteTitle:  a.WebsiteTitle,
+			UpdateTime:    a.UpdateTime,
+		})
+	}
+	return &pb.SearchArticlesResponse{Articles: resp}, nil
+}

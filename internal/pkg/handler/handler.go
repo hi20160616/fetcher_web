@@ -40,6 +40,7 @@ func GetHandler() *http.ServeMux {
 	})
 	mux.HandleFunc("/list/", makeHandler(listArticlesHandler))
 	mux.HandleFunc("/article/", makeHandler(getArticleHandler))
+	mux.HandleFunc("/search/", makeHandler(searchArticlesHandler))
 	return mux
 }
 
@@ -68,4 +69,14 @@ func getArticleHandler(w http.ResponseWriter, r *http.Request, p *render.Page) {
 	}
 	p.Data = a
 	render.Derive(w, "article", p)
+}
+
+func searchArticlesHandler(w http.ResponseWriter, r *http.Request, p *render.Page) {
+	kw := r.URL.Query().Get("s")
+	as, err := data.SearchArticles(context.Background(), &pb.SearchArticlesRequest{Keyword: kw})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
+	p.Data = as
+	render.Derive(w, "search", p)
 }

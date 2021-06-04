@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	pb "github.com/hi20160616/fetchnews-api/proto/v1"
+	"github.com/hi20160616/fetchnews/config"
 	"github.com/hi20160616/fetchnews/internal/biz"
 	"github.com/hi20160616/fetchnews/internal/pkg/db/ms"
 )
@@ -73,22 +74,30 @@ func (ar *articleRepo) SearchArticles(ctx context.Context, keyword ...string) ([
 	as := []*biz.Article{}
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancel()
-	c := ms.Conns[ar.data.MsTitle].FetchClient
-	resp, err := c.SearchArticles(ctx, &pb.SearchArticlesRequest{Keyword: strings.Join(keyword, ",")})
-	if err != nil {
-		return nil, err
+	msTitles := []string{}
+	for _, v := range config.Data.MS {
+		msTitles = append(msTitles, v.Title)
 	}
-	for _, item := range resp.Articles {
-		t := &biz.Article{
-			Id:            item.Id,
-			Title:         item.Title,
-			Content:       item.Content,
-			WebsiteId:     item.WebsiteId,
-			WebsiteDomain: item.WebsiteDomain,
-			WebsiteTitle:  item.WebsiteTitle,
-			UpdateTime:    item.UpdateTime,
+	var c pb.FetchNewsClient
+	for _, title := range msTitles {
+		c = ms.Conns[title].FetchClient
+		resp, err := c.SearchArticles(ctx,
+			&pb.SearchArticlesRequest{Keyword: strings.Join(keyword, ",")})
+		if err != nil {
+			return nil, err
 		}
-		as = append(as, t)
+		for _, item := range resp.Articles {
+			t := &biz.Article{
+				Id:            item.Id,
+				Title:         item.Title,
+				Content:       item.Content,
+				WebsiteId:     item.WebsiteId,
+				WebsiteDomain: item.WebsiteDomain,
+				WebsiteTitle:  item.WebsiteTitle,
+				UpdateTime:    item.UpdateTime,
+			}
+			as = append(as, t)
+		}
 	}
 	return as, nil
 }
