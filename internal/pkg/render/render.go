@@ -8,6 +8,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/hi20160616/fetchnews/config"
 	"github.com/yuin/goldmark"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -26,8 +27,8 @@ func init() {
 		"smartLongTime": smartLongTime,
 		"markdown":      markdown,
 	})
-	tmplPath := filepath.Join("../../../templates", "default") // for test
-	// tmplPath := filepath.Join(config.Data.WebServer.Tmpl, "default")
+	// tmplPath := filepath.Join("../../../templates", "default") // for test
+	tmplPath := filepath.Join(config.Data.WebServer.Tmpl, "default")
 	pattern := filepath.Join(tmplPath, "*.html")
 	templates = template.Must(templates.ParseGlob(pattern))
 }

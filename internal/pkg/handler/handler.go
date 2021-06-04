@@ -54,6 +54,7 @@ func listArticlesHandler(w http.ResponseWriter, r *http.Request, p *render.Page)
 	if err != nil {
 		log.Println(err)
 	}
+	p.Title = msTitle
 	p.Data = ds.Articles
 	render.Derive(w, "list", p)
 }
@@ -66,5 +67,5 @@ func getArticleHandler(w http.ResponseWriter, r *http.Request, p *render.Page) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 	p.Data = a
-	render.Derive(w, "content", p)
+	render.Derive(w, "article", p)
 }
