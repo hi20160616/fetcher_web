@@ -1,13 +1,14 @@
 package render
 
 import (
+	"bytes"
 	"log"
 	"net/http"
 	"path/filepath"
 	"text/template"
 	"time"
 
-	"github.com/hi20160616/fetchnews/config"
+	"github.com/yuin/goldmark"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -20,12 +21,13 @@ var templates = template.New("")
 
 func init() {
 	templates.Funcs(template.FuncMap{
-		"summary":       Summary,
-		"smartTime":     SmartTime,
-		"smartLongTime": SmartLongTime,
+		"summary":       summary,
+		"smartTime":     smartTime,
+		"smartLongTime": smartLongTime,
+		"markdown":      markdown,
 	})
-	// tmplPath := filepath.Join("../../../templates", "default") // for TestValidReq
-	tmplPath := filepath.Join(config.Data.WebServer.Tmpl, "default")
+	tmplPath := filepath.Join("../../../templates", "default") // for test
+	// tmplPath := filepath.Join(config.Data.WebServer.Tmpl, "default")
 	pattern := filepath.Join(tmplPath, "*.html")
 	templates = template.Must(templates.ParseGlob(pattern))
 }
@@ -37,7 +39,7 @@ func Derive(w http.ResponseWriter, tmpl string, p *Page) {
 	}
 }
 
-func Summary(des string) string {
+func summary(des string) string {
 	dRune := []rune(des)
 	if len(dRune) <= 300 {
 		return des
@@ -51,10 +53,18 @@ func parseWithZone(t time.Time) time.Time {
 
 }
 
-func SmartTime(t *timestamppb.Timestamp) string {
+func smartTime(t *timestamppb.Timestamp) string {
 	return parseWithZone(t.AsTime()).Format("[15:04][01.02]")
 }
 
-func SmartLongTime(t time.Time) string {
+func smartLongTime(t time.Time) string {
 	return parseWithZone(t).String()
+}
+
+func markdown(in string) (string, error) {
+	var buf bytes.Buffer
+	if err := goldmark.Convert([]byte(in), &buf); err != nil {
+		return "", err
+	}
+	return buf.String(), nil
 }
