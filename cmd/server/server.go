@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/hi20160616/fetchnews/config"
+	"github.com/hi20160616/fetchnews/configs"
 	"github.com/hi20160616/fetchnews/internal/pkg/db/ms"
 	"github.com/hi20160616/fetchnews/internal/server"
 	"github.com/pkg/errors"
@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	address string = config.Data.WebServer.Addr
+	address string = configs.Data.WebServer.Addr
 )
 
 func main() {

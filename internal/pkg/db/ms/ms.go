@@ -7,12 +7,12 @@ import (
 
 	pb "github.com/hi20160616/fetchnews-api/proto/v1"
 
-	"github.com/hi20160616/fetchnews/config"
+	"github.com/hi20160616/fetchnews/configs"
 	"google.golang.org/grpc"
 )
 
 type Conn struct {
-	MicroService config.MicroService
+	MicroService configs.MicroService
 	ConnClient   *grpc.ClientConn
 	FetchClient  pb.FetchNewsClient
 }
@@ -21,7 +21,7 @@ var Conns = map[string]*Conn{}
 
 func Open() error {
 	if Conns != nil {
-		for _, v := range config.Data.MS {
+		for _, v := range configs.Data.MS {
 			conn, err := grpc.Dial(v.Addr, grpc.WithInsecure(), grpc.WithBlock())
 			if err != nil {
 				return err

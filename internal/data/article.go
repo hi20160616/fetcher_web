@@ -7,7 +7,7 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	pb "github.com/hi20160616/fetchnews-api/proto/v1"
-	"github.com/hi20160616/fetchnews/config"
+	"github.com/hi20160616/fetchnews/configs"
 	"github.com/hi20160616/fetchnews/internal/biz"
 	"github.com/hi20160616/fetchnews/internal/pkg/db/ms"
 )
@@ -75,7 +75,7 @@ func (ar *articleRepo) SearchArticles(ctx context.Context, keyword ...string) ([
 	ctx, cancel := context.WithTimeout(context.Background(), 50*time.Second)
 	defer cancel()
 	msTitles := []string{}
-	for _, v := range config.Data.MS {
+	for _, v := range configs.Data.MS {
 		msTitles = append(msTitles, v.Title)
 	}
 	var c pb.FetchNewsClient

@@ -5,12 +5,11 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"strings"
 
 	pb "github.com/hi20160616/fetchnews-api/proto/v1"
-	"github.com/hi20160616/fetchnews/config"
-	"github.com/hi20160616/fetchnews/internal/data"
-	"github.com/hi20160616/fetchnews/internal/pkg/render"
+	"github.com/hi20160616/fetchnews/configs"
+	"github.com/hi20160616/fetchnews/internal/server/render"
+	"github.com/hi20160616/fetchnews/internal/service"
 )
 
 var validPath = regexp.MustCompile("^/(list|article|search)/(.*?)$")
@@ -45,13 +44,12 @@ func GetHandler() *http.ServeMux {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	render.Derive(w, "home", &render.Page{Title: "Home", Data: config.Data.MS})
+	render.Derive(w, "home", &render.Page{Title: "Home", Data: configs.Data.MS})
 }
 
 func listArticlesHandler(w http.ResponseWriter, r *http.Request, p *render.Page) {
-	msTitle := r.URL.Path[len("/list/"):]
-	msTitle = strings.ReplaceAll(msTitle, "/", "")
-	ds, err := data.ListArticles(context.Background(), &pb.ListArticlesRequest{}, msTitle)
+	msTitle := r.URL.Query().Get("v")
+	ds, err := service.ListArticles(context.Background(), &pb.ListArticlesRequest{}, msTitle)
 	if err != nil {
 		log.Println(err)
 	}
@@ -63,7 +61,7 @@ func listArticlesHandler(w http.ResponseWriter, r *http.Request, p *render.Page)
 func getArticleHandler(w http.ResponseWriter, r *http.Request, p *render.Page) {
 	msTitle := r.URL.Query().Get("website")
 	id := r.URL.Query().Get("id")
-	a, err := data.GetArticle(context.Background(), &pb.GetArticleRequest{Id: id}, msTitle)
+	a, err := service.GetArticle(context.Background(), &pb.GetArticleRequest{Id: id}, msTitle)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
@@ -72,8 +70,8 @@ func getArticleHandler(w http.ResponseWriter, r *http.Request, p *render.Page) {
 }
 
 func searchArticlesHandler(w http.ResponseWriter, r *http.Request, p *render.Page) {
-	kw := r.URL.Query().Get("s")
-	as, err := data.SearchArticles(context.Background(), &pb.SearchArticlesRequest{Keyword: kw})
+	kw := r.URL.Query().Get("v")
+	as, err := service.SearchArticles(context.Background(), &pb.SearchArticlesRequest{Keyword: kw})
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}

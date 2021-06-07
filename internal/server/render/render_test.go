@@ -3,11 +3,11 @@ package render
 import (
 	"testing"
 
-	"github.com/hi20160616/fetchnews/config"
+	"github.com/hi20160616/fetchnews/configs"
 )
 
 func TestMarkdown(t *testing.T) {
-	config.Reset("../../../../")
+	configs.Reset("../../../../")
 	tcs := []struct {
 		in  string
 		out string

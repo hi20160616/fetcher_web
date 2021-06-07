@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/hi20160616/fetchnews/internal/pkg/handler"
+	"github.com/hi20160616/fetchnews/internal/server/handler"
 )
 
 type Server struct {

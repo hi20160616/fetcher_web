@@ -29,11 +29,11 @@ go mod tidy
 
 # TODO
 - [x] add: content display
-- [ ] add: search implement
+- [x] add: search implement
 - [x] add: markdown view for content
-- [ ] fix: dumplicate double loop range for objects type switch
+<!-- - [ ] fix: dumplicate double loop range for objects type switch -->
 - [ ] fix: Miscroservice client conns close action block on Miscroservice server closed.
-- [ ] change: handler path: list to ms title, such as bbc, voa, etc.
-- [ ] optimize: update skeleton to deal better for biz, data, service
-- [ ] optimize: Miscroservice Client Conns open should display if success.
+<!-- - [ ] change: handler path: list to ms title, such as bbc, voa, etc. -->
+- [x] optimize: update skeleton to deal better for biz, data, service
+- [x] optimize: Miscroservice Client Conns open should display if success.
 - [ ] optimize: error display elegant while runtime err: invalid memory address
