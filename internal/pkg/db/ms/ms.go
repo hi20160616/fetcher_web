@@ -6,6 +6,7 @@ import (
 	"time"
 
 	pb "github.com/hi20160616/fetchnews-api/proto/v1"
+	"github.com/pkg/errors"
 
 	"github.com/hi20160616/fetchnews/configs"
 	"google.golang.org/grpc"
@@ -22,9 +23,9 @@ var Conns = map[string]*Conn{}
 func Open() error {
 	if Conns != nil {
 		for _, v := range configs.Data.MS {
-			conn, err := grpc.Dial(v.Addr, grpc.WithInsecure(), grpc.WithBlock())
+			conn, err := grpc.Dial(v.Addr, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(5*time.Second))
 			if err != nil {
-				return err
+				return errors.WithMessagef(err, "[%s] grpc conn timeout", v.Title)
 			}
 			// defer conn.Close()
 			Conns[v.Title] = &Conn{
