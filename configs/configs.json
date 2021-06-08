@@ -1,5 +1,5 @@
 {
-  "gist": "https://gist.githubusercontent.com/hi20160616/277faf779bee0d0d1525696eff6e8b56/raw/07956ee2b1848d72d80c072e1498858cfdb8a9f0/configs.json",
+  "gist": "https://gist.githubusercontent.com/hi20160616/277faf779bee0d0d1525696eff6e8b56/raw/configs.json",
   "title": "",
   "webserver": {
     "Addr": ":8080",
