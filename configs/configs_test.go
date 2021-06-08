@@ -5,13 +5,16 @@ import (
 	"testing"
 )
 
-func TestGet(t *testing.T) {
+func TestLoad(t *testing.T) {
 	// RootPath = "../" // for test
 	// err := get()
 	// if err != nil {
 	//         t.Error(err)
 	// }
 	if err := Reset("../"); err != nil {
+		t.Error(err)
+	}
+	if err := load(); err != nil {
 		t.Error(err)
 	}
 	fmt.Println("Configuration:")

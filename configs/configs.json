@@ -1,26 +1,18 @@
 {
-  "webserver":{
-    "addr":":8080",
-    "tmpl":"templates"
+  "gist": "https://gist.githubusercontent.com/hi20160616/277faf779bee0d0d1525696eff6e8b56/raw/07956ee2b1848d72d80c072e1498858cfdb8a9f0/configs.json",
+  "title": "",
+  "webserver": {
+    "Addr": ":8080",
+    "Tmpl": "templates"
   },
-  "api":{
-    "grpc":{
-      "addr":"0.0.0.0:8000",
-      "timeout":"1s"
+  "api": {
+    "grpc": {
+      "Addr": "0.0.0.0:8000",
+      "Timeout": "1s"
     },
-    "http":{
-      "addr":"0.0.0.0:9000",
-      "timeout":"1s"
-    }
-  },
-  "microservice":{
-    "bbc":{
-      "title":"bbc",
-      "domain":"www.bbc.com",
-      "url":["https://www.bbc.com/zhongwen/simp/topics/ck2l9z0em07t"],
-      "addr":":10001",
-      "timeout":"1s",
-      "heartbeat":"5m"
+    "http": {
+      "Addr": "0.0.0.0:9000",
+      "Timeout": "1s"
     }
   }
 }

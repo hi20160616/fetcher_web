@@ -2,7 +2,9 @@ package configs
 
 import (
 	"encoding/json"
+	"io"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 )
@@ -10,6 +12,7 @@ import (
 var RootPath = ""
 
 type configuration struct {
+	Gist      string    `json:"gist"`
 	Title     string    `json:"title"`
 	WebServer webserver `json:"webserver"`
 	API       struct {
@@ -47,19 +50,44 @@ func setRootPath() error {
 	return nil
 }
 
-func get() error {
+func load() error {
 	f, err := os.ReadFile(filepath.Join(RootPath, "configs/configs.json"))
 	if err != nil {
 		return err
 	}
-	return json.Unmarshal(f, Data)
+	if err := json.Unmarshal(f, Data); err != nil {
+		return err
+	}
+
+	resp, err := http.Get(Data.Gist)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return err
+	}
+	if err := json.Unmarshal(body, &Data); err != nil {
+		return err
+	}
+	data, err := json.MarshalIndent(Data, "", "  ")
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(
+		filepath.Join(RootPath, "configs/configs.json"),
+		data, 0755); err != nil {
+		return err
+	}
+	return nil
 }
 
 func init() {
 	if err := setRootPath(); err != nil {
 		log.Printf("config init error: %v", err)
 	}
-	if err := get(); err != nil {
+	if err := load(); err != nil {
 		log.Printf("config get() error: %v", err)
 	}
 }
@@ -67,5 +95,5 @@ func init() {
 // Reset is for test to reset RootPath and invoke get()
 func Reset(pwd string) error {
 	RootPath = pwd
-	return get()
+	return load()
 }
