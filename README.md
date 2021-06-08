@@ -1,6 +1,10 @@
 # Fetch News
 A web side to serve news crawl micro services
 
+# Usage
+## Add MS
+Just edit https://gist.github.com/hi20160616/277faf779bee0d0d1525696eff6e8b56
+
 # gRPC
 
 ## grpc-gateway
