@@ -41,3 +41,42 @@ go mod tidy
 - [x] optimize: update skeleton to deal better for biz, data, service
 - [x] optimize: Miscroservice Client Conns open should display if success.
 - [ ] optimize: error display elegant while runtime err: invalid memory address
+
+# Clone the ms project
+Just clone the microservices, such as project ms-bbc, and run the command to replace all string in all files, that contains `foo` to `bar`:
+```
+cd /path/to/your/folder
+# eg: sed -i 's/foo/bar/g' *
+sed -i '' 's/foo/bar/g' *.mod *.md ./internal/*/* ./cmd/*/* ./configs/* ./api/*/*/*/*
+```
+rm git
+```
+rm -rf .git
+```
+git init
+```
+git init
+git add .
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/<username>/<repo>.git
+git push -u origin main
+```
+grpc generate
+```
+protoc -I "./" -I "../../../" \
+    --go_out=. --go_opt=paths=source_relative \
+    --go-grpc_out=. --go-grpc_opt=paths=source_relative \
+    api/fetchnews/cna/v1/fetchnews.proto
+```
+go mod tidy
+```
+go mod tidy
+```
+
+Then, edit go files to fix new target:
+- modified:   configs/configs.json
+- modified:   internal/fetcher/article.go
+- modified:   internal/fetcher/article_test.go
+- modified:   internal/fetcher/links.go
+
