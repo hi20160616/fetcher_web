@@ -54,7 +54,10 @@ func parseWithZone(t time.Time) time.Time {
 
 }
 
-func smartTime(t *timestamppb.Timestamp) string {
+func smartTime(t *timestamppb.Timestamp, site string) string {
+	if site == "cna" || site == "dw" || site == "kabar" || site == "ucpnz" {
+		return t.AsTime().Format("[15:04][01.02]")
+	}
 	return parseWithZone(t.AsTime()).Format("[15:04][01.02]")
 }
 

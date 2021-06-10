@@ -60,6 +60,8 @@ func load() error {
 	}
 
 	resp, err := http.Get(Data.Gist)
+	// resp, err := http.Get( // for test
+	//         "https://gist.github.com/hi20160616/d932caa9c0c905c07ee4f773fea7c850/raw/configs.json")
 	if err != nil {
 		return err
 	}
