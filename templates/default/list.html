@@ -8,17 +8,17 @@
     <table class="table">
 	<thead>
 	    <tr>
+		<th scope="col">UpdateTime</th>
 		<th scope="col">Title</th>
 		<th scope="col">Website</th>
-		<th scope="col">UpdateTime</th>
 	    </tr>
 	</thead>
 	<tbody>
 	    {{range .Data}}
 	    <tr>
-		    <td><a href="/article/?id={{.Id}}&website={{.WebsiteTitle}}" target="_blank">{{.Title}}</a></td>
-		<td>@{{.WebsiteTitle}}</td>
 		<td>{{smartTime .UpdateTime .WebsiteTitle}}</td>
+		<td><a href="/article/?id={{.Id}}&website={{.WebsiteTitle}}">{{.Title}}</a></td>
+		<td>@{{.WebsiteTitle}}</td>
 	    </tr>
 	    {{end}}
 	</tbody>
