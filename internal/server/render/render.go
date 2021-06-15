@@ -22,10 +22,10 @@ var templates = template.New("")
 
 func init() {
 	templates.Funcs(template.FuncMap{
-		"summary":       summary,
-		"smartTime":     smartTime,
-		"smartLongTime": smartLongTime,
-		"markdown":      markdown,
+		"summary":   summary,
+		"smartTime": smartTime,
+		"smartDate": smartDate,
+		"markdown":  markdown,
 	})
 	// tmplPath := filepath.Join("../../../templates", "default") // for test
 	tmplPath := filepath.Join(configs.Data.WebServer.Tmpl, "default")
@@ -56,13 +56,16 @@ func parseWithZone(t time.Time) time.Time {
 
 func smartTime(t *timestamppb.Timestamp, site string) string {
 	if site == "cna" || site == "dw" || site == "kabar" || site == "ucpnz" {
-		return t.AsTime().Format("[15:04][01.02]")
+		return t.AsTime().Format("15:04")
 	}
-	return parseWithZone(t.AsTime()).Format("[15:04][01.02]")
+	return parseWithZone(t.AsTime()).Format("15:04")
 }
 
-func smartLongTime(t time.Time) string {
-	return parseWithZone(t).String()
+func smartDate(t *timestamppb.Timestamp, site string) string {
+	if site == "cna" || site == "dw" || site == "kabar" || site == "ucpnz" {
+		return t.AsTime().Format("01.02")
+	}
+	return parseWithZone(t.AsTime()).Format("01.02")
 }
 
 func markdown(in string) (string, error) {

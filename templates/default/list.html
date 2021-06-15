@@ -16,8 +16,8 @@
 	<tbody>
 	    {{range .Data}}
 	    <tr>
-		<td>{{smartTime .UpdateTime .WebsiteTitle}}</td>
-		<td><a href="/article/?id={{.Id}}&website={{.WebsiteTitle}}">{{.Title}}</a></td>
+		    <td><span class="badge bg-dark">{{smartDate .UpdateTime .WebsiteTitle}}</span><span class="badge bg-light text-dark">{{smartTime .UpdateTime .WebsiteTitle}}</span></td>
+		<td><a href="/article/?id={{.Id}}&website={{.WebsiteTitle}}" class="text-decoration-none">{{.Title}}</a></td>
 		<td>@{{.WebsiteTitle}}</td>
 	    </tr>
 	    {{end}}
