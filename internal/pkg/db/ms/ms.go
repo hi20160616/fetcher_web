@@ -23,7 +23,11 @@ var Conns = map[string]*Conn{}
 func Open() error {
 	if Conns != nil {
 		for _, v := range configs.Data.MS {
-			conn, err := grpc.Dial(v.Addr, grpc.WithInsecure(), grpc.WithBlock(), grpc.WithTimeout(5*time.Second))
+			conn, err := grpc.Dial(v.Addr,
+				grpc.WithInsecure(),
+				grpc.WithBlock(),
+				grpc.WithTimeout(5*time.Second),
+				grpc.WithMaxMsgSize(32*10e6))
 			if err != nil {
 				return errors.WithMessagef(err, "[%s] grpc conn timeout", v.Title)
 			}
