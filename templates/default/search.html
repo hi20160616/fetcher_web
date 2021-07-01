@@ -3,17 +3,19 @@
     <table class="table">
 	<thead>
 	    <tr>
+		<th scope="col">#</th>
+		<th scope="col">UpdateTime</th>
 		<th scope="col">Title</th>
 		<th scope="col">Website</th>
-		<th scope="col">UpdateTime</th>
 	    </tr>
 	</thead>
 	<tbody>
-	    {{range .Data.Articles}}
+	    {{range $i, $data := .Data.Articles}}
 	    <tr>
-		    <td><a href="/article/?id={{.Id}}&website={{.WebsiteTitle}}" target="_blank">{{.Title}}</a></td>
-		<td>@{{.WebsiteTitle}}</td>
-		<td>{{smartTime .UpdateTime .WebsiteTitle}}</td>
+		    	    <th scope="row">{{plusOne $i}}</th>
+		    <td><span class="badge bg-dark">{{smartDate $data.UpdateTime $data.WebsiteTitle}}</span><span class="badge bg-light text-dark">{{smartTime $data.UpdateTime $data.WebsiteTitle}}</span></td>
+		<td><a href="/article/?id={{$data.Id}}&website={{$data.WebsiteTitle}}" class="text-decoration-none" >{{$data.Title}}</a></td>
+		<td>@{{$data.WebsiteTitle}}</td>
 	    </tr>
 	    {{end}}
 	</tbody>

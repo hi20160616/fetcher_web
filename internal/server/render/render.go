@@ -26,6 +26,7 @@ func init() {
 		"smartTime": smartTime,
 		"smartDate": smartDate,
 		"markdown":  markdown,
+		"plusOne":   plusOne,
 	})
 	// tmplPath := filepath.Join("../../../templates", "default") // for test
 	tmplPath := filepath.Join(configs.Data.WebServer.Tmpl, "default")
@@ -74,4 +75,8 @@ func markdown(in string) (string, error) {
 		return "", err
 	}
 	return buf.String(), nil
+}
+
+func plusOne(x int) int {
+	return x + 1
 }
