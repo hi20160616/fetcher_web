@@ -4,11 +4,10 @@ import (
 	"bytes"
 	"log"
 	"net/http"
-	"path/filepath"
 	"text/template"
 	"time"
 
-	"github.com/hi20160616/fetchnews/configs"
+	tmpl "github.com/hi20160616/fetchnews/templates"
 	"github.com/yuin/goldmark"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -29,9 +28,10 @@ func init() {
 		"plusOne":   plusOne,
 	})
 	// tmplPath := filepath.Join("../../../templates", "default") // for test
-	tmplPath := filepath.Join(configs.Data.WebServer.Tmpl, "default")
-	pattern := filepath.Join(tmplPath, "*.html")
-	templates = template.Must(templates.ParseGlob(pattern))
+	// tmplPath := filepath.Join(configs.Data.WebServer.Tmpl, "default")
+	// pattern := filepath.Join(tmplPath, "*.html")
+	// templates = template.Must(templates.ParseGlob(pattern))
+	templates = template.Must(templates.ParseFS(tmpl.FS, "default/*.html"))
 }
 
 func Derive(w http.ResponseWriter, tmpl string, p *Page) {

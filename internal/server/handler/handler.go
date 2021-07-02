@@ -10,6 +10,7 @@ import (
 	"github.com/hi20160616/fetchnews/configs"
 	"github.com/hi20160616/fetchnews/internal/server/render"
 	"github.com/hi20160616/fetchnews/internal/service"
+	tmpl "github.com/hi20160616/fetchnews/templates"
 )
 
 var validPath = regexp.MustCompile("^/(list|article|search)/(.*?)$")
@@ -37,6 +38,7 @@ func GetHandler() *http.ServeMux {
 		}
 		homeHandler(w, req)
 	})
+	mux.Handle("/s/", http.StripPrefix("/s/", http.FileServer(http.FS(tmpl.FS))))
 	mux.HandleFunc("/list/", makeHandler(listArticlesHandler))
 	mux.HandleFunc("/article/", makeHandler(getArticleHandler))
 	mux.HandleFunc("/search/", makeHandler(searchArticlesHandler))
