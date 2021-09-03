@@ -1,4 +1,4 @@
-package data
+package data_test
 
 import (
 	"context"
@@ -8,6 +8,7 @@ import (
 	"github.com/go-kratos/kratos/v2/log"
 	pb "github.com/hi20160616/fetchnews-api/proto/v1"
 	"github.com/hi20160616/fetchnews/configs"
+	"github.com/hi20160616/fetchnews/internal/data"
 	"github.com/hi20160616/fetchnews/internal/pkg/db/ms"
 	"github.com/hi20160616/fetchnews/internal/service"
 )
@@ -24,7 +25,7 @@ func TestListArticles(t *testing.T) {
 		}
 	}
 	// test section
-	ar := NewArticleRepo(&Data{MsTitle: "bbc"}, &log.Verbose{})
+	ar := data.NewArticleRepo(&data.Data{MsTitle: "bbc"}, &log.Verbose{})
 	as, err := ar.ListArticles(context.Background())
 	if err != nil {
 		t.Error(err)
@@ -46,7 +47,7 @@ func TestGetArticle(t *testing.T) {
 		}
 	}
 	// test section
-	ar := NewArticleRepo(&Data{MsTitle: "bbc"}, &log.Verbose{})
+	ar := data.NewArticleRepo(&data.Data{MsTitle: "bbc"}, &log.Verbose{})
 	as, err := ar.GetArticle(context.Background(), "cfb24f41b3786f04f821373233281d52")
 	if err != nil {
 		t.Error(err)
@@ -66,7 +67,7 @@ func TestSearchArticles(t *testing.T) {
 		}
 	}
 	// test section
-	ar := NewArticleRepo(&Data{MsTitle: "bbc"}, &log.Verbose{})
+	ar := data.NewArticleRepo(&data.Data{MsTitle: "bbc"}, &log.Verbose{})
 	as, err := ar.SearchArticles(context.Background(), "奥运, 南海")
 	if err != nil {
 		t.Error(err)
