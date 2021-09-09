@@ -7,17 +7,12 @@ import (
 
 	"github.com/go-kratos/kratos/v2/log"
 	pb "github.com/hi20160616/fetchnews-api/proto/v1"
-	"github.com/hi20160616/fetchnews/configs"
 	"github.com/hi20160616/fetchnews/internal/data"
 	"github.com/hi20160616/fetchnews/internal/pkg/db/ms"
 	"github.com/hi20160616/fetchnews/internal/service"
 )
 
 func TestListArticles(t *testing.T) {
-	// path prepare
-	if err := configs.Reset("../../"); err != nil {
-		t.Error(err)
-	}
 	// init prepare
 	if len(ms.Conns) == 0 {
 		if err := ms.Open(); err != nil {
@@ -36,10 +31,6 @@ func TestListArticles(t *testing.T) {
 }
 
 func TestGetArticle(t *testing.T) {
-	// path prepare
-	if err := configs.Reset("../../"); err != nil {
-		t.Error(err)
-	}
 	// init prepare
 	if len(ms.Conns) == 0 {
 		if err := ms.Open(); err != nil {
@@ -56,10 +47,6 @@ func TestGetArticle(t *testing.T) {
 }
 
 func TestSearchArticles(t *testing.T) {
-	// path prepare
-	if err := configs.Reset("../../"); err != nil {
-		t.Error(err)
-	}
 	// init prepare
 	if len(ms.Conns) == 0 {
 		if err := ms.Open(); err != nil {
@@ -78,10 +65,6 @@ func TestSearchArticles(t *testing.T) {
 }
 
 func TestList(t *testing.T) {
-	// path prepare
-	if err := configs.Reset("../../"); err != nil {
-		t.Error(err)
-	}
 	// init prepare
 	if len(ms.Conns) == 0 {
 		if err := ms.Open(); err != nil {

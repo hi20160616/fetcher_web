@@ -2,12 +2,9 @@ package render
 
 import (
 	"testing"
-
-	"github.com/hi20160616/fetchnews/configs"
 )
 
 func TestMarkdown(t *testing.T) {
-	configs.Reset("../../../../")
 	tcs := []struct {
 		in  string
 		out string
