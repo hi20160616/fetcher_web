@@ -7,19 +7,27 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
-var RootPath = ""
+var (
+	Data = &configuration{ProjectName: "fetchnews"}
+)
 
 type configuration struct {
-	Gist      string    `json:"gist"`
-	Title     string    `json:"title"`
-	WebServer webserver `json:"webserver"`
-	API       struct {
+	RootPath    string
+	ProjectName string
+	Debug       bool      `json:"debug"`
+	Verbose     bool      `json:"verbose"`
+	Gist        string    `json:"gist"`
+	Title       string    `json:"title"`
+	WebServer   webserver `json:"webserver"`
+	API         struct {
 		GRPC api `json:"grpc"`
 		HTTP api `json:"http"`
 	} `json:"api"`
-	MS map[string]MicroService `json:"microservice"`
+	MS  map[string]MicroService `json:"microservice"`
+	Err error
 }
 
 type webserver struct {
@@ -39,19 +47,29 @@ type MicroService struct {
 	Heartbeat string   `json:"heartbeat"`
 }
 
-var Data = &configuration{}
+func init() {
+	if err := setRootPath(); err != nil {
+		log.Printf("config init error: %v", err)
+	}
+	if err := load(); err != nil {
+		log.Printf("config get() error: %v", err)
+	}
+}
 
 func setRootPath() error {
 	root, err := os.Getwd()
 	if err != nil {
 		return err
 	}
-	RootPath = root
+	Data.RootPath = root
+	if strings.Contains(os.Args[0], ".test") {
+		rootPath4Test()
+	}
 	return nil
 }
 
 func load() error {
-	f, err := os.ReadFile(filepath.Join(RootPath, "configs/configs.json"))
+	f, err := os.ReadFile(filepath.Join(Data.RootPath, "configs/configs.json"))
 	if err != nil {
 		return err
 	}
@@ -59,9 +77,9 @@ func load() error {
 		return err
 	}
 
+	// test gist
+	// Data.Gist = "https://gist.github.com/hi20160616/d932caa9c0c905c07ee4f773fea7c850/raw/configs.json"
 	resp, err := http.Get(Data.Gist)
-	// resp, err := http.Get( // for test
-	//         "https://gist.github.com/hi20160616/d932caa9c0c905c07ee4f773fea7c850/raw/configs.json")
 	if err != nil {
 		return err
 	}
@@ -77,25 +95,25 @@ func load() error {
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(
-		filepath.Join(RootPath, "configs/configs.json"),
-		data, 0755); err != nil {
-		return err
+	// Write back to configs.json to check if only debug is true
+	if Data.Debug {
+		return os.WriteFile(filepath.Join(Data.RootPath,
+			"configs/configs.json"),
+			data, 0755)
 	}
 	return nil
 }
 
-func init() {
-	if err := setRootPath(); err != nil {
-		log.Printf("config init error: %v", err)
-	}
-	if err := load(); err != nil {
-		log.Printf("config get() error: %v", err)
-	}
-}
+func rootPath4Test() string {
+	ps := strings.Split(Data.RootPath, string(Data.ProjectName))
 
-// Reset is for test to reset RootPath and invoke get()
-func Reset(pwd string) error {
-	RootPath = pwd
-	return load()
+	n := 0
+	s := string(os.PathSeparator)
+	if len(ps) > 1 {
+		n = strings.Count(ps[1], s)
+	}
+	for i := 0; i < n; i++ {
+		Data.RootPath = filepath.Join(".."+s, "."+s)
+	}
+	return Data.RootPath
 }

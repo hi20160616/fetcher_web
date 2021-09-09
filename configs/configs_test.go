@@ -6,19 +6,10 @@ import (
 )
 
 func TestLoad(t *testing.T) {
-	// RootPath = "../" // for test
-	// err := get()
-	// if err != nil {
-	//         t.Error(err)
-	// }
-	if err := Reset("../"); err != nil {
-		t.Error(err)
-	}
-	if err := load(); err != nil {
-		t.Error(err)
-	}
 	fmt.Println("Configuration:")
-	for k, v := range Data.MS {
-		fmt.Printf("Key: %s, Value: %s", k, v)
-	}
+	fmt.Println(Data.WebServer)
+	fmt.Println(Data.API)
+	// for k, v := range Data.MS {
+	//         fmt.Printf("Key: %s, Value: %s", k, v)
+	// }
 }
