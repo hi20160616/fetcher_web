@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/go-kratos/kratos/v2/log"
 	pb "github.com/hi20160616/fetchnews-api/proto/v1"
@@ -9,6 +10,11 @@ import (
 )
 
 func ListArticles(ctx context.Context, in *pb.ListArticlesRequest, msTitle string) (*pb.ListArticlesResponse, error) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Recovered in ListArticles: \n%v\n", r)
+		}
+	}()
 	ar := data.NewArticleRepo(&data.Data{MsTitle: msTitle}, &log.Verbose{})
 	as, err := ar.ListArticles(ctx)
 	if err != nil {
@@ -30,6 +36,12 @@ func ListArticles(ctx context.Context, in *pb.ListArticlesRequest, msTitle strin
 }
 
 func GetArticle(ctx context.Context, in *pb.GetArticleRequest, msTitle string) (*pb.Article, error) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Recovered in GetArticle: %s\n%v\n", in.Id, r)
+		}
+	}()
+
 	ar := data.NewArticleRepo(&data.Data{MsTitle: msTitle}, &log.Verbose{})
 	a, err := ar.GetArticle(ctx, in.Id)
 	if err != nil {
@@ -47,6 +59,11 @@ func GetArticle(ctx context.Context, in *pb.GetArticleRequest, msTitle string) (
 }
 
 func SearchArticles(ctx context.Context, in *pb.SearchArticlesRequest) (*pb.SearchArticlesResponse, error) {
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Recovered in SearchArticles: \n%v\n", r)
+		}
+	}()
 	ar := data.NewArticleRepo(&data.Data{}, &log.Verbose{})
 	as, err := ar.SearchArticles(ctx, in.Keyword)
 	if err != nil {
