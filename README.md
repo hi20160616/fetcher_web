@@ -41,6 +41,7 @@ go mod tidy
 - [x] optimize: update skeleton to deal better for biz, data, service
 - [x] optimize: Miscroservice Client Conns open should display if success.
 - [ ] optimize: error display elegant while runtime err: invalid memory address
+- [ ] render.go: parseWithZone conditions on configs.json
 
 # Clone the ms project
 Just clone the microservices, such as project ms-bbc, and run the command to replace all string in all files, that contains `foo` to `bar`:
